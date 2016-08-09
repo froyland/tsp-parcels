@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet GeoJSON Example</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
+	
+</head>
+<body style="margin:auto;">	
+	<div>
+		<div style="display: flex; z-index: 1000; position: absolute; width: 100vw; justify-content: center;">
+			<div style="background: #efefef; padding: 10px; margin-top: 20px; height: 30px; display: flex; align-items: center;">
+				<h1>AREIS points intersected with parcel data. Select layers ></h1>				
+			</div>			
+		</div>		
+		<div id="map" style="width: 100vw; height: 100vh"></div>		
+	</div>		
+	<script src="https://npmcdn.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
+	<script src="./leaflet.ajax.min.js"></script>
+
+	
+
+	<script>
+		var base = new L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png');
+		
+		var style = {
+			actionComplete:{
+				'color': '#a6611a'
+			},
+		 doesntQual:{
+				'color': '#dfc27d'
+			}, 
+		 noSampling:{
+				'color': '#80cdc1'
+			},  
+		 qualifies:{
+				'color': '#018571'
+			},  
+		}
+		
+		var doesntQual = new L.GeoJSON.AJAX('json/parcels_doesNotQualifyForEcy.geojson',
+			{
+				style: style.doesntQual,
+				onEachFeature: function(feature, layer){
+					feature.properties.type = 'Doesn\'t Qualify'
+					layer.bindPopup(feature.properties.type)
+				}
+				
+			})
+			// .addTo(map);
+		var noSampling = new L.GeoJSON.AJAX('json/parcels_noSamplingData.geojson',
+			{
+				style: style.noSampling,
+				onEachFeature: function(feature, layer){
+					feature.properties.type = 'No Sampling Required'
+					layer.bindPopup(feature.properties.type)
+				}
+			})
+			// .addTo(map);
+		var qualifies = new L.GeoJSON.AJAX('json/parcels_qualifiesForEcy.geojson',
+			{
+				style: style.qualifies,
+				onEachFeature: function(feature, layer){
+					feature.properties.type = 'Qualifies for Cleanup'
+					layer.bindPopup(feature.properties.type)
+				}
+			})
+			// .addTo(map);
+		var actionComplete = new L.GeoJSON.AJAX('json/parcels_actionComplete.geojson',
+			{
+				style: style.actionComplete,
+				onEachFeature: function(feature, layer){
+					feature.properties.type = 'Action Complete'
+					layer.bindPopup(feature.properties.type)
+				}
+			})
+			// .addTo(map)
+			
+		var basemaps = {
+			"basemap" : base
+		}
+
+		var parcels = {
+			"<strong>No Sampling Data</strong>": noSampling,
+			"<strong>Qualifies for ECY</strong>": qualifies,
+			"<strong>Doesn't Qualify for ECY</strong>": doesntQual,
+			"<strong>Action Complete</strong>": actionComplete
+		}
+		
+		console.log(parcels)
+
+		var map = L.map('map', {
+			center: [47.29, -122.51],
+			zoom: 15,	
+			layers: [base]		
+		});
+		
+		// layer selection
+		L.control.layers(
+			basemaps,
+			parcels, 
+			{
+				collapsed: false
+			}
+			).addTo(map)	
+		
+		
+		
+		
+		
+
+	</script>
+</body>
+</html>
