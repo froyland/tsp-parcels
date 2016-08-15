@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Leaflet GeoJSON Example</title>
+	<title>tsp-parcels</title>
 	<meta charset="utf-8" />
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -146,7 +146,7 @@
 		var map = L.map('map', {
 			center: [47.29, -122.51],
 			zoom: 15,	
-			layers: [base]		
+			layers: [base, noSampling, qualifies, doesntQual, actionComplete]		
 		});
 		
 		// layer selection
